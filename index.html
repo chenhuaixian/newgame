@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		 body{
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                background: url(background.png) no-repeat fixed top;
+                background-size: 100% 110%;
+            }
+            button {
+            	position: absolute;
+            	right: 15%;
+            	width: 200px;
+            	height: 100px;
+            	border-radius: 50px;
+            	font-size: 20px;
+            }
+            #start1,#start2,.fanhui,#jieshu {
+            	height: 50px;
+            	right: 43%;
+            	top: 90%;
+            }
+            .biaoti {
+            	font-size: 50px;
+            	color: white;
+            	margin-top: 20px;
+            }
+            #zimuDiv,#nextDiv,#suanshuDiv,#jieshuDiv{
+            	display: none;
+            }
+            #nextDiv{
+            	color: white;
+            	font-size: 100px;
+            }
+            #char{
+            	font-size: 400px;
+            	color: white;
+            }
+            #char.right{
+                color: lightgreen;
+                /*text-shadow: 水平位置 垂直位置 模糊距离 阴影颜色*/
+                text-shadow: 0 0 50px #666;
+                transform: scale(1.1,1.1);
+            }
+            #result,#result1 {
+                font-size: 20px;
+                color: #888;
+            }
+            /*找到id为char及类名为error的div元素*/
+            #char.error {
+                color: red;
+                transform-origin: 50% 50%;
+                transform: rotate(3deg);
+            }
+            .dig {
+            	float: left;
+            	font-size: 300px;
+            	color: white;
+            }
+            input,.queding {
+            	width: 200px;
+            	height: 50px;
+            	border: none;
+            	margin-top: 10px;
+            	font-size: 30px;
+            	text-align: center;
+            }
+            #queding {
+            	width: 100px;
+            }
+            .gou {
+                float: left;
+                font-size: 300px;
+                color: lightgreen;
+                transform: scale(1.1,1.1);
+            }
+            .cha {
+                float: left;
+                font-size: 300px;
+                color: red;
+                transform-origin: 50% 50%;
+                transform: rotate(3deg);
+            }
+	</style>
+</head>
+<body>
+	<button id="start1">开始游戏</button>
+	<div id="zimuDiv">
+		<div class="biaoti">认识字母</div>
+        <div id="char">A</div>
+        <div id="result">请在按键上按下屏幕上显示的字母</div>
+        <button class="fanhui" onclick="javascript:location.reload();">回到首页</button>
+    </div>
+    <div id="nextDiv">
+	    <button id="start2">继续</button>
+	</div>
+    <div id="suanshuDiv">
+    	<div class="biaoti">学会算术</div>
+    	<div class="dig" id="div11"></div>
+    	<div class="dig" id="div22"></div>
+    	<div class="dig" id="div33"></div>
+    	<div id="result1">请在输入框内输入数学题的结果,点击确定</div>
+    	<input type="text" name=""><button id="queding">确定</button>
+    	<button class="fanhui" onclick="javascript:location">回到首页</button>
+    </div>
+    <div id="jieshuDiv">
+        <button id="jieshu" onclick="javascript:location.reload();">再来一次</button>
+    </div>
+</body>
+</html>
+<script>
+	// 游戏1-认识字母
+	var btn1 =document.getElementById('start1'); 
+	var btn2 =document.getElementById('start2');
+	var div1 =document.getElementById('zimuDiv');
+	var next =document.getElementById('nextDiv')
+	var fanhui =document.getElementById('fanhui');
+    //来保存65~90之间的任意一个随机整数
+    var code;
+    //表示正确的次数
+    var okCount=0;
+    //错误的次数
+    var errorCount=0;
+    //获取显示字符的div
+    var charBox=document.getElementById('char');
+    //获取显示结果的div
+    var result=document.getElementById('result');
+
+    btn1.onclick = function(){
+    	document.body.style.background = "url(background1.png)";
+    	btn1.style.display = 'none';
+    	btn2.style.display = 'none';
+    	div1.style.display = 'block';
+    }
+    //获取A~Z之间的任意一个字符
+    function show(){
+        //获取[0,1)之间的一个随机数
+        var rand=Math.random();
+        //获取一个0到26之间的一个随机数（不包含26）
+        code=rand*26;
+        //Math.floor(a)对数字a向下取整，获取到一个小于等于a最近的整数
+        //获取0~25之间任意一个整数
+        code=Math.floor(code);
+        //获取到65~90之间的任意整数
+        code=code+65;
+        //把Unicode的十进制编码转化成对应的字符
+        //获取A~Z的任意一个字符
+        var char=String.fromCharCode(code);
+        //console.log(char);
+        //把字符显示在界面上
+        charBox.innerHTML=char;
+    }
+    show();//调用方法
+
+    //键盘按下来的事件
+    window.onkeydown=function(ev){
+        //获取按键所对应的Unicode十进制编码
+        var key=ev.keyCode;
+
+        //判断按键字母所对应的数字和随机获取的数字是否相等
+        if(key==code){
+        //按键正确，正确次数+1
+        okCount ++;
+        //当按键正确时，重新显示新的字符
+        show();
+        //添加正确的动画 通过js给div添加类名
+        charBox.className ='right';
+
+	    //如果正确题数大于20 继续下一页
+        if (okCount>19) {
+        	document.body.style.background = "url(background2.png) no-repeat fixed top"; 
+        	document.body.style.backgroundSize = '100% 110%';
+        	div1.style.display = 'none';
+        	next.style.display = 'block';
+        	btn2.style.display = 'block';
+            }
+        }else{
+            //按键错误，错误次数+1
+            errorCount ++;
+            //添加按键错误的动画
+            charBox.className ='error'; 
+        }
+        showResult();
+        //0.3秒之后清楚，动画
+        setTimeout(clearAnimated,300);
+    }
+    function clearAnimated(){
+        //负责清楚动画
+        charBox.className='';
+    }
+    //展示计算的结果
+    function showResult(){
+        var rate=100*okCount/(okCount+errorCount);
+        //显示正确个数 错误个数 及正确率
+        result.innerHTML='正确'+okCount+'个'+'错误'+errorCount+'个'
+        +'正确率'+rate.toFixed(2)+'%';//toFixed(2)保留两位小数
+    }
+
+
+    //游戏2-学会算术
+	var btn1 =document.getElementById('start1'); 
+	var btn2 =document.getElementById('start2');
+	var div2 =document.getElementById('suanshuDiv');
+	var fanhui =document.getElementById('fanhui');
+	//获取各个div
+	var oDiv1 =document.getElementById("div11");
+	var oDiv2 =document.getElementById("div22");
+	var oDiv3 =document.getElementById("div33");
+	var gou =0;
+	var cha =0;
+    var result1 =document.getElementById("result1");
+    var jieshuDiv =document.getElementById("jieshuDiv");
+
+	btn2.onclick = function(){
+    	document.body.style.background = "url(background1.png)";
+    	btn1.style.display = 'none';
+    	btn2.style.display = 'none';
+    	div2.style.display = 'block';
+    }
+    //生成题目
+    function timu(){
+		var arr =['+','-','*'];
+		var rand =Math.round(Math.random()*2);
+        oDiv2.innerHTML=arr[rand];
+	    oDiv1.innerHTML=Math.round(Math.random()*10);
+	    if(oDiv2.innerHTML=='/') {
+	    	oDiv3.innerHTML=Math.round(Math.random()*10+1);
+	    }else {
+	    	oDiv3.innerHTML=Math.round(Math.random()*10);
+	    }	
+    }
+    timu();//调用生成题目函数
+
+
+    //获取输入框内的值
+    var input =document.getElementsByTagName('input')[0];
+    var quedingBtn =document.getElementById("queding");
+    quedingBtn.onclick =function (){
+        //定义结果
+       if (oDiv2.innerHTML =='+') {
+        var result = Number(oDiv1.innerHTML)+Number(oDiv3.innerHTML);
+        }else if (oDiv2.innerHTML =='-') {
+            var result = new Number(oDiv1.innerHTML)-new Number(oDiv3.innerHTML);
+        }else {
+            var result = new Number(oDiv1.innerHTML)*new Number(oDiv3.innerHTML);
+        }
+        //判断输入框内的值是否和答案相等
+        if (input.value == result) {
+            gou ++;
+            timu();
+            oDiv1.className ='gou';
+            oDiv2.className ='gou';
+            oDiv3.className ='gou';
+
+            if (gou>9) {
+            document.body.style.background = "url(background3.png) no-repeat fixed top"; 
+            document.body.style.backgroundSize = '100% 110%';
+            div2.style.display = 'none';
+            jieshuDiv.style.display = 'block';
+
+            showResult();
+            resultRate();
+            }
+        }else {
+            cha ++;
+            oDiv1.className ='cha';
+            oDiv2.className ='cha';
+            oDiv3.className ='cha';
+        }
+        resultRate();
+        setTimeout(reAnimated,300);
+    }
+    function reAnimated(){
+        //负责清楚动画
+        oDiv1.className='dig';
+        oDiv2.className='dig';
+        oDiv3.className='dig';
+    }
+    
+    //展示正确率
+    function resultRate(){
+        var rate=100*gou/(gou+cha);
+        //显示正确个数 错误个数 及正确率
+        result1.innerHTML='正确'+gou+'个'+'错误'+cha+'个'
+        +'正确率'+rate.toFixed(2)+'%';//toFixed(2)保留两位小数
+    }
+
+    
+</script>
